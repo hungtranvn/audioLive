@@ -1,0 +1,5 @@
+*.exe
+*.log
+*~
+# Ignore the .idea directory in IntelliJ
+/ .idea/
