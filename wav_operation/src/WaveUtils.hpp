@@ -1,15 +1,17 @@
 #ifndef WAVE_UTILS_HPP
 #define WAVE_UTILS_HPP
 
-#include "Wave.hpp"
+#include "WaveHeader.hpp"
 #include "Endianness.hpp"
+#include "interface/IReadableWave.hpp"
+
+#include <cstring>
 
 namespace wave {
 
 /*helper function*/
 bool checkWaveParameters(size_t num_channels,
                          int sample_rate,
-                         WaveFormat format,
                          size_t bytes_per_sample,
                          size_t num_samples) {
     if (num_channels == 0 || sample_rate <= 0 || bytes_per_sample == 0)
@@ -23,55 +25,66 @@ bool checkWaveParameters(size_t num_channels,
     if (static_cast<uint64_t>(sample_rate) * num_channels * bytes_per_sample > 
                                           std::numeric_limits<uint32_t>::max())
         return false;
-
-    /*format and bytes_per_sample must agree*/
-    switch (format) {
-        case WAVE_FORMAT_PCM:
-            if (bytes_per_sample != 1 && bytes_per_sample != 2)
-                return false;
-            break;
-        case WAVE_FORMAT_ALAW:
-        case WAVE_FORMAT_MULAW:
-            if (bytes_per_sample != 1)
-                return false;
-            break;
-        default:
-            return false;
-    }
     
     if (num_samples % num_channels != 0)
         return false;
+
+    return true;
 }
 
 /*write the wave's information to buf */
 void writeWaveHeader(uint8_t* buf,
                      size_t num_channels,
                      int sample_rate,
-                     WaveFormat format,
                      size_t bytes_per_sample,
                      size_t num_samples) {
-    if (!checkWaveParameters(num_channels, sample_rate, format,
+
+    if (!checkWaveParameters(num_channels, sample_rate,
                              bytes_per_sample, num_samples));
-    WaveHeader header;
-    const size_t bytes_in_payload = bytes_per_sample * num_samples;
-    // write riff
+    // prepare riff header
     WaveRiff riff = {
         toBigEndian(RIFF),
-        toLittle(),
-        toBigEndian(WAV)
-    }
+        toLittleEndian(36 + sizeof(WaveData) + 
+                       (num_samples * num_channels * bytes_per_sample)),
+        toBigEndian(WAV),
+    };
     
+    // prepare format header
+    WaveFormat format = {
+        toBigEndian(FMT),
+        toLittleEndian(16),
+        toLittleEndian(1),
+        toLittleEndian(num_channels),
+        toLittleEndian(sample_rate),
+        toLittleEndian(sample_rate * num_channels * bytes_per_sample),
+        toLittleEndian(num_channels * bytes_per_sample),
+        toLittleEndian(bytes_per_sample * 8),
+    };
+    
+    // prepare data header
+    WaveData data = {
+        toBigEndian(DATA),
+        toLittleEndian(num_samples * num_channels * bytes_per_sample),
+    };
+
+    WaveHeader header = {
+        riff,
+        format,
+        data,
+    };
+
+    memcpy(buf, &header, WAVE_HEADER_SIZE);
 }
 
 /*read the wave's header information*/
-bool readWaveHeader(ReadableWav* readable,
+bool readWaveHeader(IReadableWave* readable,
                     size_t num_channels,
                     int* sample_rate,
-                    WaveFormat* format,
                     size_t* bytes_per_sample,
                     size_t num_samples) {
-
+    
     // checkWaveParameters
+    return true;
 }
 } // namespace wave
 #endif // WAVE_UTILS_HPP
