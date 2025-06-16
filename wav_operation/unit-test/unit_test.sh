@@ -1,3 +1,3 @@
-g++ -std=c++17 -o endianess \
-    EndiannessTest.cpp ../src/Endianness.hpp \
+g++ -std=c++17 -o waveutils \
+    WaveUtilsTest.cpp ../src/WaveUtils.hpp \
     -lgtest -lgtest_main -lgmock -lpthread

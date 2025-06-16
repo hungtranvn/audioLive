@@ -14,15 +14,13 @@ TEST(EndianTest, DetectsEndiannessCorrectly) {
 TEST(EndianTest, to_big_endian_16bit) {
     uint16_t original = 0x1234;
     uint16_t expected = isLittleEndian() ? 0x3412 : 0x1234;
-    toBigEndian(original);
-    EXPECT_EQ(original, expected);
+    EXPECT_EQ(toBigEndian(original), expected);
 }
 
 TEST(EndianTest, to_big_endian_32bit) {
     uint32_t original = 0x12345678;
     uint32_t expected = isLittleEndian() ? 0x78563412 : 0x12345678;
-    toBigEndian(original);
-    EXPECT_EQ(original, expected);
+    EXPECT_EQ(toBigEndian(original), expected);
 }
 
 
@@ -30,14 +28,12 @@ TEST(EndianTest, to_big_endian_32bit) {
 TEST(EndianTest, to_little_endian_16bit) {
     uint16_t original = 0x1234;
     uint16_t expected = isBigEndian() ? 0x3412 : 0x1234;
-    toLittleEndian(original);
-    EXPECT_EQ(original, expected);
+    EXPECT_EQ(toLittleEndian(original), expected);
 }
 
 TEST(EndianTest, to_little_endian_32bit) {
     uint32_t original = 0x12345678;
     uint32_t expected = isBigEndian() ? 0x78563412 : 0x12345678;
-    toLittleEndian(original);
-    EXPECT_EQ(original, expected);
+    EXPECT_EQ(toLittleEndian(original), expected);
 }
 } // namespace wav

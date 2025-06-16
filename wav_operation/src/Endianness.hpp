@@ -16,23 +16,27 @@ inline bool isBigEndian() {
 }
 
 template <typename T>
-void swapEndianness(T& value) {
+void swapEndian(T& value) {
     static_assert(std::is_trivially_copyable<T>::value, "Type must be trivially copyable");
     auto* ptr = reinterpret_cast<uint8_t*>(&value);
     std::reverse(ptr, ptr + sizeof(T));
 }
 
 template <typename T>
-void toLittleEndian(T& value) {
+T toLittleEndian(T value) {
     static_assert(std::is_integral<T>::value, "Type must be an integral");
+    T tmp = value;
     if (isBigEndian())
-        swapEndianness(value);
+        swapEndian(tmp);
+    return tmp;
 }
 
 template <typename T>
-void toBigEndian(T& value) {
+T toBigEndian(T value) {
+    T tmp = value;
     if (isLittleEndian())
-        swapEndianness(value);
+        swapEndian(tmp);
+    return tmp;
 }
 } // namespace wav
 #endif // ENDIANNESS_HPP
