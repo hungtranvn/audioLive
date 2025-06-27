@@ -2,24 +2,27 @@
 #define WAVE_WRITER_HPP
 
 #include "./interface/IWaveFile.hpp"
+
+namespace wave {
 class WaveReader final : public IWaveFile {
 public:
     WaveReader(const std::string& filename);
     ~WaveReader() override;
 
-    void ReadSamples(const float* samples, size_t num_samples);
-    void ReadSample(const int16_t* samples, size_t num_samples);
+    auto getSampleRate() const -> int override;
+    auto getNumChannels() const -> size_t override;
+    auto getNumSamples() const -> size_t override;
+    
+    auto readSamples(size_t num_samples, float* samples) -> size_t;
+    auto readSamples(size_t num_samples, int16_t* samples) -> size_t;
 
-    int getSampleRate() const override;
-    size_t getNumChannels() const override;
-    size_t getNumSamples() const override;
 private:
-    void close();
+    auto close() -> void;
     int m_sample_rate;
     size_t m_num_channels;
     size_t m_num_samples;
     size_t m_num_samples_remaining;
     FILE* m_file_handle;
-}
-
+};
+} //namespace wave
 #endif // WAVE_WRITER_HPP

@@ -48,6 +48,7 @@ struct WaveSample {
 };
 
 static const int WAVE_HEADER_SIZE = 44;
+static const int BYTES_PER_SAMPLE = 2; // pcm type
 static_assert(sizeof(WaveHeader) == WAVE_HEADER_SIZE, "No padding in header");
 
 static uint32_t RIFF = 0x52494646;

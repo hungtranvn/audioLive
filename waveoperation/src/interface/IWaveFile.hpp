@@ -1,8 +1,9 @@
 #ifndef IWAVE_FILE_HPP
 #define IWAVE_FILE_HPP
 
-#include <stream>
+#include <iostream>
 #include <string>
+#include <sstream>
 
 namespace wave {
 class IWaveFile {
@@ -17,10 +18,10 @@ public:
         
         s << "Sample rate: " << getSampleRate() << " Hz, Channels: " << getNumChannels()
           << ", Duration: "
-          << (1.f * getNumSamples()) / (getNumChannels() * getSample_rate()) << " s";
+          << (1.f * getNumSamples()) / (getNumChannels() * getSampleRate()) << " s";
         
         return s.str();
     }
-}
+};
 } // namespace wave
 #endif // IWAVE_FILE_HPP

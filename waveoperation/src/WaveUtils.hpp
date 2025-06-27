@@ -6,7 +6,7 @@
 #include "./ReadableWave.hpp"
 
 #include <cstring>
-
+#include <limits>
 #include <iostream>
 
 namespace wave {
@@ -14,10 +14,11 @@ namespace wave {
 
 /*Wave Header suport function*/
 /*helper function*/
-bool checkWaveParameters(size_t num_channels,
+auto checkWaveParameters(size_t num_channels,
                          int sample_rate,
                          size_t bytes_per_sample,
-                         size_t num_samples) {
+                         size_t num_samples) -> bool
+{
     if (num_channels == 0 || sample_rate <= 0 || bytes_per_sample == 0) {
         std::cout << "check 0" << std::endl;
         return false;
@@ -49,11 +50,12 @@ bool checkWaveParameters(size_t num_channels,
 }
 
 /*write the wave's information to buf */
-void writeWaveHeader(uint8_t* buf,
+auto writeWaveHeader(uint8_t* buf,
                      size_t num_channels,
                      int sample_rate,
                      size_t bytes_per_sample,
-                     size_t num_samples) {
+                     size_t num_samples) -> void
+{
 
     if (!checkWaveParameters(num_channels, sample_rate,
                              bytes_per_sample, num_samples));
@@ -93,11 +95,12 @@ void writeWaveHeader(uint8_t* buf,
 }
 
 /*read the wave's header information*/
-bool readWaveHeader(ReadableWave* readable,
+auto readWaveHeader(ReadableWave* readable,
                     size_t* num_channels,
                     int* sample_rate,
                     size_t* bytes_per_sample,
-                    size_t* num_samples) {
+                    size_t* num_samples) -> bool
+{
     WaveHeader header;
     readable->read(&header, WAVE_HEADER_SIZE);
     

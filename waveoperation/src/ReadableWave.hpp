@@ -15,7 +15,9 @@ public:
     
     virtual size_t read(void* buf, size_t num_bytes) {
         // read each 1 bytes until numbytes from m_file to buf
-        return fread(buf, 1, num_bytes, m_file);
+        if (m_file != nullptr)
+            return fread(buf, 1, num_bytes, m_file);
+        return 0;
     }
 private:
     FILE* m_file;
